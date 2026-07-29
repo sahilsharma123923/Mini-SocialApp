@@ -1,10 +1,18 @@
 import './App.css'
 import Navbar from './components/Navbar'
+import Feed from './pages/Feed'
+
 
 function App() {
 
   return (
-    <Navbar/>
+
+    <div>
+
+      <Navbar/>
+      <Feed/>
+    
+    </div>
   )
 }
 
