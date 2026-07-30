@@ -1,18 +1,16 @@
 import './App.css'
-import Navbar from './components/Navbar'
-import Feed from './pages/Feed'
+import { Routes,Route } from 'react-router-dom'
+import Home from './pages/Home'
 
 
 function App() {
 
   return (
 
-    <div>
-
-      <Navbar/>
-      <Feed/>
-    
-    </div>
+  <Routes>
+    <Route path='/' element={<Home/>}/>
+  </Routes>
+  
   )
 }
 

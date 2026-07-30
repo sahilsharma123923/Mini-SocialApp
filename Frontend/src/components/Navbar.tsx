@@ -1,66 +1,92 @@
-import { Bell, Home, LogOut, MessageCircle, MessagesSquare, Search, Settings, User } from "lucide-react"
-import { Input } from "./ui/input"
+import {Bell,Home,LogOut, MessageCircle, MessagesSquare, Search, Settings,User,} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {DropdownMenu,DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "./ui/dropdown-menu";
 
 const Navbar = () => {
-
   return (
-  <div className="sticky top-0 w-full z-50 bg-background border-b">
-    <div className="mx-auto max-w-7xl px-4 md:px-6 h-16 flex items-center justify-between">
-        <div className="text-2xl font-bold flex items-center gap-2 text-neutral-700">
-          <MessagesSquare className="w-4 h-4 size-6" />
-            SocialApp
+    <header className="sticky top-0 z-50 w-full border-b bg-background">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
+        {/* Logo */}
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-2xl font-bold text-foreground"
+        >
+          <MessagesSquare className="size-6" />
+          <span>SocialApp</span>
+        </Link>
+
+        {/* Search */}
+        <div className="relative hidden w-full max-w-md md:block">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input placeholder="Search..." className="pl-10" />
         </div>
-        <div className="relative w-full max-w-md">
-            <Search className=" absolute left-3 top-1/2 w-4 h-4 -translate-y-1/2 text-muted-foreground"/>
-            <Input className="pl-10" placeholder="Search..."/>
+
+        {/* Navigation */}
+        <div className="flex items-center gap-3 md:gap-5">
+          {/* Home */}
+          <Link to="/">
+            <Button variant="ghost" size="icon" aria-label="Home">
+              <Home className="size-5" />
+            </Button>
+          </Link>
+
+          {/* Notifications */}
+          <Link to="/notifications">
+            <Button variant="ghost" size="icon" aria-label="Notifications">
+              <Bell className="size-5" />
+            </Button>
+          </Link>
+
+          {/* Messages */}
+          <Link to="/messages">
+            <Button variant="ghost" size="icon" aria-label="Messages">
+              <MessageCircle className="size-5" />
+            </Button>
+          </Link>
+
+          {/* Profile Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button
+                variant="ghost"
+                className="rounded-full p-0 hover:bg-transparent focus-visible:ring-1 focus-visible:ring-indigo-400"
+              >
+                <Avatar>
+                  <AvatarFallback className="bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                    SS
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end" className="w-48">
+              <Link to="/profile">
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <User className="size-4 text-blue-500" />
+                  Profile
+                </DropdownMenuItem>
+              </Link>
+
+              <Link to="/settings">
+                <DropdownMenuItem className="flex items-center gap-2">
+                  <Settings className="size-4" />
+                  Settings
+                </DropdownMenuItem>
+              </Link>
+
+              <DropdownMenuItem className="flex items-center gap-2 text-red-500">
+                <LogOut className="size-4" />
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <div>
-            <div className="flex items-center gap-9">
-              {/* Home */}
-              <Button variant="ghost" size="icon" aria-label="Home">
-                <Home className="size-5"/>
-              </Button>
-
-               {/* Notification */}
-              <Button variant="ghost" size="icon">
-               <Bell className="size-5"/>
-              </Button>
-
-               {/*Message*/}
-              <Button variant="ghost" size="icon">
-               <MessageCircle className="size-5"/>
-              </Button>
-
-             {/* Profile and settings */}
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button variant="ghost" className="hover:bg-transparent">
-                    <Avatar>
-                      <AvatarFallback>SS</AvatarFallback>
-                     </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent>
-                  <DropdownMenuItem className="flex items-center gap-1.5">
-                    <User className="size-4 text-blue-900"/>
-                    Profile</DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="size-4 text-muted-foreground"/>
-                    Settings</DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <LogOut className="size-4 text-red-500"/>
-                    Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-        </div>
-    </div>
-  </div>
+      </div>
+    </header>
   );
 };
 
-export default Navbar
+export default Navbar;
