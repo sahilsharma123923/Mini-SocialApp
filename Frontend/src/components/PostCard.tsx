@@ -1,19 +1,13 @@
 import { Heart, MessageCircle } from "lucide-react"
 import { Avatar, AvatarFallback } from "./ui/avatar"
+import type { Post } from "@/types/Posts";
 
 
-interface PostProps{
-    id:number,
-    username:string,
-    avatar:string,
-    content:string,
-    image ?:string,
-    likes:number,
-    comments:number,
-    createdAt:string,
+interface PostProps {
+    post : Post
 }
 
-const PostCard = ({post}:{post:PostProps}) => {
+const PostCard = ({post}:PostProps) => {
   return (
     <div className="border rounded-xl p-4 flex flex-col gap-3 bg-background">
 
