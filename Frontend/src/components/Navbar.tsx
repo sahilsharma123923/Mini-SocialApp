@@ -12,10 +12,10 @@ const Navbar = () => {
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center gap-2 text-xl font-bold text-foreground"
+          className="flex items-center gap-2 text-2xl font-semibold text-foreground"
          >
           <MessagesSquare className="size-5" />
-           <span>SocialApp</span>
+           <span className="font-mono">SocialApp</span>
         </Link>
 
         {/* Search */}

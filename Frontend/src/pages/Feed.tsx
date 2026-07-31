@@ -1,6 +1,5 @@
 import PostCard from "@/components/PostCard"
 import { useState } from "react";
-import CreatePost from "@/components/CreatePost";
 
 
 const fakePosts=[
@@ -55,8 +54,7 @@ const Feed = () => {
   const[posts,setPosts]=useState(fakePosts);
 
   return (
-    <div className="max-w-xl mx-auto mt-10 px-4 flex flex-col gap-4">
-      <CreatePost/>
+    <div className="max-w-xl mx-auto mt-10 px-4 flex flex-col gap-4 font-mono">
      {posts.map((post)=>{
        return <PostCard key={post.id} post={post}/>
       })};

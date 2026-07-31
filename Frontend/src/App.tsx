@@ -1,6 +1,7 @@
 import './App.css'
 import { Routes,Route } from 'react-router-dom'
 import Home from './pages/Home'
+import CreatePostPage from './pages/CreatePostPage'
 
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
 
   <Routes>
     <Route path='/' element={<Home/>}/>
+    <Route path='/create' element={<CreatePostPage/>}/>
   </Routes>
   
   )
