@@ -1,8 +1,20 @@
 import { create } from "zustand";
 import { fakePosts } from "@/data/Posts";
+import type { Post } from "@/types/Posts";
 
-export const usePostStore=create(()=>({
+interface PostStore{
+    posts:Post[];
+    addPost:(newpost:Post)=>void;
+}
+
+export const usePostStore=create<PostStore>((set)=>({
  
     posts:fakePosts,
+
+    addPost:(newposts)=>{
+     set((state)=>({
+        posts:[newposts,...state.posts],
+     }))
+    }
 
 }));

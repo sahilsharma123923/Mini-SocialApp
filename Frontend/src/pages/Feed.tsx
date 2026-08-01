@@ -12,9 +12,9 @@ const Feed = ({posts}:FeedProps) => {
     <div className="max-w-xl mx-auto mt-10 px-4 flex flex-col gap-4 font-mono">
      {posts.map((post)=>{
        return <PostCard key={post.id} post={post}/>
-      })};
+      })}
     </div>
-  );
+  )
 }
 
 export default Feed
