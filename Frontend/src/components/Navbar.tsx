@@ -49,17 +49,12 @@ const Navbar = () => {
 
           {/* Profile Dropdown */}
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button
-                variant="ghost"
-                className="rounded-full p-0 hover:bg-transparent focus-visible:ring-1 focus-visible:ring-indigo-400"
-              >
-                <Avatar className="size-9">
-                  <AvatarFallback className="bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                    SS
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
+           <DropdownMenuTrigger className="rounded-full p-0 hover:bg-transparent focus-visible:ring-1 focus-visible:ring-indigo-400">
+             <Avatar className="size-9">
+               <AvatarFallback className="bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                 SS
+                </AvatarFallback>
+              </Avatar>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-48">

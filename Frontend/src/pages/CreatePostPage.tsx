@@ -6,11 +6,34 @@ import { useState } from "react"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
+import{ usePostStore }from "../store/PostStore"
 
 const CreatePostPage = () => {
-    const [content,setContent]=useState("");
-
+    const[text,setText]=useState("")
+    const addPost=usePostStore((state)=>state.addPost);
     const navigate=useNavigate();
+
+    const handlePost=()=>{
+      if(!text.trim())
+        return;
+ 
+       const newpost={
+        id:Date.now(),
+        username:"SahilSharma323",
+        avatar:"SS",
+        content:text,
+        likes:0,
+        comments:0,
+        createdAt:"Just now"
+       };
+
+       addPost(newpost);
+
+       setText("");
+
+       navigate("/");
+    }
+
 
   return (
   <div className="min-h-screen bg-background py-10 px-4">
@@ -35,8 +58,8 @@ const CreatePostPage = () => {
           </Avatar>
 
           <Textarea 
-          value={content}
-          onChange={(e)=>setContent(e.target.value)}
+          value={text}
+          onChange={(e)=>setText(e.target.value)}
           className="w-full min-h-40 resize-none border-0 shadow-none focus-visible:ring-0 font-mono text-lg"
           placeholder="What's on your mind ?"
           />
@@ -62,8 +85,9 @@ const CreatePostPage = () => {
         </Button>
         <Button
         variant="outline"
-        disabled={!content.trim()}
+        disabled={!text.trim()}
         className="font-mono"
+        onClick={handlePost}
          >Post
         </Button>
        </CardFooter>
