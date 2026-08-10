@@ -6,6 +6,7 @@ export  const fakePosts=[
  avatar:"SS",
  content:"Just deployed my first project!Feeling good about this one.",
  likes:12,
+ isLiked:false,
  comments:4,
  createdAt:"2h ago"
 },
@@ -15,6 +16,7 @@ export  const fakePosts=[
  avatar:"RK",
  content:"Finally shipped my side project this weekened.Small win, feels huge.",
  likes:24,
+ isLiked:false,
  comments:1,
  createdAt:"10min ago"
 },
@@ -24,6 +26,7 @@ export  const fakePosts=[
  avatar:"AM",
  content:"Learning React has been such a fun journey so far.",
  likes:4,
+ isLiked:false,
  comments:10,
  createdAt:"1h ago"
 },
@@ -33,6 +36,7 @@ export  const fakePosts=[
  avatar:"BS",
  content:"Just deployed my first project!Feeling good about this one.",
  likes:2,
+ isLiked:false,
  comments:4,
  createdAt:"1h ago"
 },{
@@ -41,6 +45,7 @@ export  const fakePosts=[
  avatar:"SK",
  content:"Learning NodeJS and recently make a backend project. ",
  likes:22,
+ isLiked:false,
  comments:4,
  createdAt:"1h ago"
 }
