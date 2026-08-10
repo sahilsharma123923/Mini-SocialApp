@@ -1,11 +1,13 @@
 import { create } from "zustand";
 import { fakePosts } from "@/data/Posts";
 import type { Post } from "@/types/Posts";
+import type { Comment } from "@/types/comments";
 
 interface PostStore {
   posts: Post[];
   addPost: (newPost: Post) => void;
   toggleLiked: (id: number) => void;
+  addComment:(comment:Comment)=>void;
 }
 
 export const usePostStore = create<PostStore>((set) => ({
@@ -32,4 +34,17 @@ export const usePostStore = create<PostStore>((set) => ({
       ),
     }));
   },
+
+  addComment:(comment)=>{
+    set((state)=>({
+      comments:[...state.comment,comment],
+      posts:state.posts.map((post)=>
+      post.id===comment.PostId ?{
+        ...post,
+        comments:post.comments+1
+      }
+
+    )
+    }))
+  }
 }));
