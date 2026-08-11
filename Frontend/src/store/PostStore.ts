@@ -5,6 +5,7 @@ import type { Comment } from "@/types/comments";
 
 interface PostStore {
   posts: Post[];
+   comments: Comment[];
   addPost: (newPost: Post) => void;
   toggleLiked: (id: number) => void;
   addComment:(comment:Comment)=>void;
@@ -12,7 +13,7 @@ interface PostStore {
 
 export const usePostStore = create<PostStore>((set) => ({
   posts: fakePosts,
-
+  comments:[],
   addPost: (newPost) => {
     set((state) => ({
       posts: [newPost, ...state.posts],
@@ -37,14 +38,14 @@ export const usePostStore = create<PostStore>((set) => ({
 
   addComment:(comment)=>{
     set((state)=>({
-      comments:[...state.comment,comment],
+      comments:[...state.comments,comment],
       posts:state.posts.map((post)=>
       post.id===comment.PostId ?{
         ...post,
         comments:post.comments+1
       }
-
+    :post
     )
-    }))
+    }));
   }
 }));
