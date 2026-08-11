@@ -40,7 +40,7 @@ export const usePostStore = create<PostStore>((set) => ({
     set((state)=>({
       comments:[...state.comments,comment],
       posts:state.posts.map((post)=>
-      post.id===comment.PostId ?{
+      post.id===comment.postId ?{
         ...post,
         comments:post.comments+1
       }

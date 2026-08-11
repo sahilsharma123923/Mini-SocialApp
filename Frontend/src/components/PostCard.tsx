@@ -2,7 +2,9 @@ import { Heart, MessageCircle } from "lucide-react"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 import type { Post } from "@/types/Posts";
 import { usePostStore } from "@/store/PostStore";
-
+import CommentSection from "./CommentSection";
+import { useState } from "react";
+import { Button } from "./ui/button";
 
 interface PostProps {
     post : Post
@@ -10,6 +12,7 @@ interface PostProps {
 
 const PostCard = ({post}:PostProps) => {
     const toggleLike=usePostStore((state)=>state.toggleLiked);
+    const [showComments,setShowComments]=useState(false)
   return (
     <div className="border rounded-xl p-4 flex flex-col gap-3 bg-background">
 
@@ -37,8 +40,8 @@ const PostCard = ({post}:PostProps) => {
         <div className="flex items-center gap-6 border-t pt-3">
 
         {/* Like */}
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           onClick={() => toggleLike(post.id)}
           className={`flex items-center gap-1.5 text-sm cursor-pointer ${
             post.isLiked
@@ -52,18 +55,33 @@ const PostCard = ({post}:PostProps) => {
           />
 
           <span>{post.likes}</span>
-        </button>
+        </Button>
 
         {/* Comment */}
-        <button
-          type="button"
+        <Button
+          variant="ghost"
+          onClick={()=>setShowComments(!showComments)}
+
           className="flex items-center gap-1.5 text-sm text-muted-foreground cursor-pointer"
         >
           <MessageCircle className="size-4" />
           <span>{post.comments}</span>
-        </button>
+        </Button>
 
       </div>
+      {showComments && (
+        <div>
+          <CommentSection postId={post.id}/>
+
+          <Button
+          variant="ghost"
+          onClick={()=>setShowComments(false)}
+           className="mt-2">
+            Close
+          </Button>
+        </div>
+      
+      )}
     </div>
   )
 }
