@@ -18,9 +18,8 @@ const PostCard = ({post}:PostProps) => {
   return (
     <div className="border rounded-xl p-4 flex flex-col gap-3 bg-background">
 
-        {/* Header Part */}
    {/* Header Part */}
-<div className="flex items-center justify-between">
+ <div className="flex items-center justify-between">
 
   {/* User */}
   <div className="flex items-center gap-3">
