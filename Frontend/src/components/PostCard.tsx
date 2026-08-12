@@ -1,4 +1,4 @@
-import { Heart, MessageCircle } from "lucide-react"
+import { Heart, MessageCircle, Trash } from "lucide-react"
 import { Avatar, AvatarFallback } from "./ui/avatar"
 import type { Post } from "@/types/Posts";
 import { usePostStore } from "@/store/PostStore";
@@ -12,21 +12,42 @@ interface PostProps {
 
 const PostCard = ({post}:PostProps) => {
     const toggleLike=usePostStore((state)=>state.toggleLiked);
+    const deletePost=usePostStore((state)=>state.deletePost)
+
     const [showComments,setShowComments]=useState(false)
   return (
     <div className="border rounded-xl p-4 flex flex-col gap-3 bg-background">
 
         {/* Header Part */}
-     <div className="flex items-center gap-3">
-        <Avatar>
-            <AvatarFallback>{post.avatar}</AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col">
-            <span className="text-sm font-semibold">{post.username}</span>
-            <span className="text-xs text-muted-foreground">{post.createdAt}</span>
-        </div>
-     </div>
+   {/* Header Part */}
+<div className="flex items-center justify-between">
 
+  {/* User */}
+  <div className="flex items-center gap-3">
+    <Avatar>
+      <AvatarFallback>{post.avatar}</AvatarFallback>
+    </Avatar>
+
+    <div className="flex flex-col">
+       <span className="text-sm font-semibold">
+         {post.username}
+       </span>
+
+       <span className="text-xs text-muted-foreground">
+         {post.createdAt}
+       </span>
+     </div>
+   </div>
+
+  {/* Delete */}
+  <Button
+    variant="ghost"
+    onClick={() => deletePost(post.id)}
+  >
+    <Trash className="w-4 h-4" />
+  </Button>
+
+</div>
        {/* Body part */}
        <div>
         <p>{post.content}</p>
