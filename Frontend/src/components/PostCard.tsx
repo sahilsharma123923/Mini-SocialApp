@@ -38,14 +38,6 @@ const PostCard = ({post}:PostProps) => {
      </div>
    </div>
 
-  {/* Delete */}
-  <Button
-    variant="ghost"
-    onClick={() => deletePost(post.id)}
-  >
-    <Trash className="w-4 h-4" />
-  </Button>
-
 </div>
        {/* Body part */}
        <div>
@@ -56,39 +48,51 @@ const PostCard = ({post}:PostProps) => {
         )}
        </div>
 
-       {/* Footer */}
-        <div className="flex items-center gap-6 border-t pt-3">
+       <div className="flex items-center justify-between border-t pt-3">
+
+         {/* Like + Comment */}
+        <div className="flex items-center gap-5">
 
         {/* Like */}
-        <Button
-          variant="ghost"
-          onClick={() => toggleLike(post.id)}
-          className={`flex items-center gap-1.5 text-sm cursor-pointer ${
+      <Button
+        variant="ghost"
+        onClick={() => toggleLike(post.id)}
+        className={`flex items-center gap-1.5 text-sm ${
             post.isLiked
-              ? "text-red-500"
-              : "text-muted-foreground hover:text-red-500"
-          }`}
-        >
-          <Heart
-            className="size-4"
-            fill={post.isLiked ? "currentColor" : "none"}
-          />
+          ? "text-red-500"
+          : "text-muted-foreground hover:text-red-500"
+       }`}
+    >
+      <Heart
+        className="size-4"
+        fill={post.isLiked ? "currentColor" : "none"}
+      />
 
-          <span>{post.likes}</span>
-        </Button>
+      <span>{post.likes}</span>
+    </Button>
 
-        {/* Comment */}
-        <Button
-          variant="ghost"
-          onClick={()=>setShowComments(!showComments)}
+    {/* Comment */}
+    <Button
+      variant="ghost"
+      onClick={() => setShowComments(!showComments)}
+      className="flex items-center gap-1.5 text-sm text-muted-foreground"
+    >
+      <MessageCircle className="size-4" />
+      <span>{post.comments}</span>
+    </Button>
 
-          className="flex items-center gap-1.5 text-sm text-muted-foreground cursor-pointer"
-        >
-          <MessageCircle className="size-4" />
-          <span>{post.comments}</span>
-        </Button>
+  </div>
 
-      </div>
+  {/* Delete */}
+  <Button
+    variant="ghost"
+    onClick={() => deletePost(post.id)}
+    className="text-xs text-muted-foreground hover:text-neutral-400"
+  >
+    <Trash className="w-3 h-3" />
+  </Button>
+
+</div>
       {showComments && (
         <div>
           <CommentSection postId={post.id}/>
