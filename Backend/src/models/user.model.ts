@@ -1,25 +1,29 @@
-import mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const userSchema=new mongoose.Schema({
-    FullName:{
-        type:String,
-        required:true,
-        trim:true
+const userSchema = new mongoose.Schema(
+  {
+    fullName: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    email:{
-        type:String,
-        required:[true,"email is required to create a account"],
-        trim:true
+    email: {
+      type: String,
+      unique: true,
+      required: [true, "email is required to create an account"],
+      trim: true,
     },
-    password:{
-        type:String,
-        required:true,
-        minLenght:[6,"password contain more than 6 characters"]
-    }
-},{
-    timestamps:true
-})
+    password: {
+      type: String,
+      required: true,
+      minLength: [6, "password must be at least 6 characters"],
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const userModel=mongoose.model("User",userSchema)
+const userModel = mongoose.model("User", userSchema);
 
-module.exports=userModel
+export default userModel;
