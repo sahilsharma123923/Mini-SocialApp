@@ -1,6 +1,20 @@
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
+import bcrypt from "bcryptjs";
 
-const userSchema = new mongoose.Schema(
+
+interface IUser{
+  fullName:string,
+  email:string,
+  password:string
+}
+
+interface IUserMethods{
+  comparePassword(password:string):Promise<boolean>;
+}
+
+type UserDocument=HydratedDocument<IUser,IUserMethods>;
+
+const userSchema = new mongoose.Schema<IUser,mongoose.Model<IUser,{},IUserMethods>>(
   {
     fullName: {
       type: String,
@@ -24,6 +38,20 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const userModel = mongoose.model("User", userSchema);
+userSchema.pre("save",async function() {
+  if(!this.isModified("password")){
+    return;
+  }
+  const hash=await bcrypt.hash(this.password,10)
+  this.password=hash;
+  return;
+  
+});
+
+userSchema.method("comparePassword",async function(password:string):Promise<boolean> {
+  return await bcrypt.compare(password,this.password)
+});
+
+const userModel = mongoose.model<IUser,mongoose.Model<IUser,{},IUserMethods>>("User", userSchema);
 
 export default userModel;
