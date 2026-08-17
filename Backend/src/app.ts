@@ -1,8 +1,9 @@
 import express from 'express'
+import router from './routes/auth.route';
 
 const app=express();
 app.use(express.json());
 
-// app.use("/api/auth",authRouter);
+app.use("/api/auth",router);
 
 export default app
