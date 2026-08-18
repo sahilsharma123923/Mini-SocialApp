@@ -2,17 +2,17 @@ import mongoose, { HydratedDocument } from "mongoose";
 import bcrypt from "bcryptjs";
 
 
-interface IUser{
+ export interface IUser{
   fullName:string,
   email:string,
   password:string
 }
 
-interface IUserMethods{
+ export interface IUserMethods{
   comparePassword(password:string):Promise<boolean>;
 }
 
-type UserDocument=HydratedDocument<IUser,IUserMethods>;
+ export type UserDocument=HydratedDocument<IUser,IUserMethods>;
 
 const userSchema = new mongoose.Schema<IUser,mongoose.Model<IUser,{},IUserMethods>>(
   {

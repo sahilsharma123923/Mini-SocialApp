@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken'
 import { Request,Response,NextFunction} from "express";
 
 async function authMiddleware(req:Request,res:Response,next:NextFunction) {
- const token =req.cookies.token || req.headers.authorization?.split("") [1];
+
+ const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
  
  if(!token){
     return res.status(401).json({
@@ -17,6 +18,13 @@ async function authMiddleware(req:Request,res:Response,next:NextFunction) {
     const decoded=await jwt.verify(token,process.env.JWT_SECRET) as {userId:string};
 
     const user=await userModel.findById(decoded.userId)
+
+    if(!user){
+        return res.status(401).json({
+            message:"Unauthorized access, token is missing",
+            status:"Failed"
+        })
+    };
 
     req.user=user
 

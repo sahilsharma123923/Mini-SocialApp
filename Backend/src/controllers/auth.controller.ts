@@ -64,7 +64,7 @@ async function userLogin(req:Request,res:Response){
        })
    
        if(!user){
-           res.status(401).json({
+        return res.status(401).json({
                message:"Email or password is not valid",
                status:"Failed"
            })
@@ -86,9 +86,10 @@ async function userLogin(req:Request,res:Response){
        res.cookie("token",token)
 
        return res.status(200).json({
-        message:"User login successfully"
-        user:{
-            id:user?.id
+        message:"User login successfully",
+        User:{
+            id:user._id,
+            email:user.email,
         }
        })
    }catch(err){
@@ -100,4 +101,4 @@ async function userLogin(req:Request,res:Response){
    }
 
 }
-export default {userRegister}
+export default {userRegister,userLogin}
