@@ -1,7 +1,7 @@
-import mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 
-interface IPost extends Document{
+ export interface IPost extends Document{
     content:string;
     image?:string;
     author:mongoose.Types.ObjectId;
@@ -36,4 +36,4 @@ const postSchema=new mongoose.Schema<IPost>({
 
 const postModel=mongoose.model("Post",postSchema);
 
-module.exports=postModel
+export default postModel

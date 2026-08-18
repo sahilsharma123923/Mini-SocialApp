@@ -1,4 +1,4 @@
-import mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 export interface IComment {
   content: string;
@@ -33,4 +33,4 @@ const commentSchema = new mongoose.Schema<IComment>(
 
 const Comment = mongoose.model<IComment>("Comment", commentSchema);
 
-module.exports= Comment
+export default Comment
