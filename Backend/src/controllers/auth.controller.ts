@@ -18,12 +18,11 @@ async function userRegister(req:Request,res:Response) {
                     status:"Failed"
                 })
             }
-            const hashPassword=await bcrypt.hash(password,10)
 
             const user=await userModel.create({
                 email,
                 fullName,
-                password:hashPassword
+                password
             })
 
             if(!process.env.JWT_SECRET){
