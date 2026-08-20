@@ -38,7 +38,6 @@ async function createPost(req: Request, res: Response) {
     });
   }
 }
-
 async function getAllPosts(req: Request, res: Response) {
   try {
     const posts = await postModel
@@ -86,6 +85,58 @@ catch(err){
       message:"Internal server error"
    })
 }
+}
+async function editPost(req:Request,res:Response) {
+
+  try{
+       const{postId}=req.params;
+   const{content,image}=req.body
+   const userId=req.user?._id
+
+   if(!userId){
+    return res.status(401).json({
+      message:"Unauthorized access"
+    })
+   }
+   
+   const post=await postModel.findById(postId);
+
+   if(!post){
+    return res.status(404).json({
+      message:"Post not found"
+    })
+   }
+
+   const result = post.author.equals(userId)
+
+   if(!result){
+    return res.status(403).json({
+      message:"You are not allowed to edit this post"
+    })
+   }
+
+   const updatedPost=await postModel.findByIdAndUpdate(
+    postId,
+    {
+      content,image
+    },
+    {
+      new:true
+    }
+   )
+
+   return res.status(200).json({
+    message:"Post edit successfully",
+    updatedPost
+   })
+
+  }
+  catch(err){
+    return res.status(500).json({
+      message:"Internal server error"
+    })
+  }
+     
 }
 
 export default {
