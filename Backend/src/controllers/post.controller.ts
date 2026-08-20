@@ -98,7 +98,7 @@ async function editPost(req:Request,res:Response) {
       message:"Unauthorized access"
     })
    }
-   
+
    const post=await postModel.findById(postId);
 
    if(!post){
@@ -138,9 +138,47 @@ async function editPost(req:Request,res:Response) {
   }
      
 }
+async function deletePost(req:Request,res:Response) {
+  const{postId}=req.params
+  const userId=req.user?._id
+
+  if(!userId){
+    return res.status(401).json({
+      message:"Unauthorized access"
+    })
+  }
+
+  const post=await postModel.findById(postId)
+
+  if(!post){
+    return res.status(404).json({
+      message :"Post not found"
+    })
+  }
+  
+  const result=post?.author.equals(userId)
+
+  if(!result){
+    return res.status(403).json({
+      message:"You are not allowed to delete this post"
+    })
+  }
+
+  const deletedPost=await postModel.findByIdAndDelete(
+    postId
+  )
+
+  return res.status(200).json({
+    message:"Post deleted successfully",
+    deletedPost
+  })
+
+}
 
 export default {
   createPost,
   getAllPosts,
-  getSinglePost
+  getSinglePost,
+  editPost,
+  deletePost
 };

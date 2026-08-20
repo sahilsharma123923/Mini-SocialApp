@@ -6,7 +6,9 @@ const routers=express.Router()
 
 routers.post("/create",authMiddleware.authMiddleware,postController.createPost)
 routers.get("/",authMiddleware.authMiddleware,postController.getAllPosts)
-routers.get("/:id",authMiddleware.authMiddleware,postController.getSinglePost)
+routers.get("/:postId",authMiddleware.authMiddleware,postController.getSinglePost)
+routers.patch("/:postId",authMiddleware.authMiddleware,postController.editPost)
+routers.delete("/:postId",authMiddleware.authMiddleware,postController.deletePost)
 
 
 export default routers
