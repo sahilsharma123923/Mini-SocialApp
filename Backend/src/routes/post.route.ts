@@ -9,6 +9,7 @@ routers.get("/",authMiddleware.authMiddleware,postController.getAllPosts)
 routers.get("/:postId",authMiddleware.authMiddleware,postController.getSinglePost)
 routers.patch("/:postId",authMiddleware.authMiddleware,postController.editPost)
 routers.delete("/:postId",authMiddleware.authMiddleware,postController.deletePost)
+routers.post("/:postId/like",authMiddleware.authMiddleware,postController.likePost)
 
 
-export default routers
+export default routers;

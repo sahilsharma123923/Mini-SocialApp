@@ -174,11 +174,77 @@ async function deletePost(req:Request,res:Response) {
   })
 
 }
+async function likePost(req:Request,res:Response) {
+  try{
+     const{postId}=req.params
+     const userId=req.user?._id
 
+  if(!userId){
+    return res.status(401).json({
+      message:"Unauthorized access"
+    })
+  }
+
+  const post=await postModel.findById(postId)
+
+  if(!post){
+    return res.status(404).json({
+      message:"Post not found"
+    })
+  }
+
+  const alreadyLiked=post.likes.some((id)=>
+    id.equals(userId)
+  )
+
+  if(alreadyLiked){
+    const updatedPost=await postModel.findByIdAndUpdate(
+      postId,
+      {
+        $pull:{
+          likes:userId
+        }
+      },
+      {
+        new:true
+      }
+    );
+    return res.status(200).json({
+      message:"Post unlike successfully",
+      liked:false,
+      updatedPost
+    })
+  }
+
+  const updatedPost=await postModel.findByIdAndUpdate(
+    postId,
+    {
+      $addToSet:{
+        likes:userId
+      }
+    },
+    {
+      new:true
+    }
+  );
+  return res.status(200).json({
+    message:"Post like successfully",
+    liked:true,
+    updatedPost
+  })
+
+  }catch(err){
+    console.log("Like/Unliked err :",err)
+    return res.status(500).json({
+      message:"Internal server error"
+    });
+  }
+}
 export default {
   createPost,
   getAllPosts,
   getSinglePost,
   editPost,
-  deletePost
+  deletePost,
+  likePost
 };
