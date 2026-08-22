@@ -240,6 +240,7 @@ async function likePost(req:Request,res:Response) {
     });
   }
 }
+
 export default {
   createPost,
   getAllPosts,
