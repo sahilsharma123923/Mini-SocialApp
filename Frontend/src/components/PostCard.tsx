@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   Heart,
   MessageCircle,
+  MoreVertical,
   Pencil,
   Trash,
 } from "lucide-react";
@@ -13,6 +14,7 @@ import { Textarea } from "./ui/textarea";
 import type { Post } from "@/types/Posts";
 import { usePostStore } from "@/store/PostStore";
 import CommentSection from "./CommentSection";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 interface PostProps {
   post: Post;
@@ -68,30 +70,31 @@ const PostCard = ({ post }: PostProps) => {
           </div>
         </div>
 
-        {/* Edit & Delete */}
-        <div className="flex items-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsEditing(true)}
-            title="Edit post"
-            className="text-xs text-muted-foreground"
-          >
-            <Pencil className="size-3" />
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => deletePost(post.id)}
-            title="Delete post"
-            className="text-xs text-muted-foreground"
-          >
-            <Trash className="size-3" />
-          </Button>
-        </div>
+          {/* Options menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button
+              variant="ghost"
+              size="icon"
+              title="Post options"
+              className="text-muted-foreground"> 
+                <MoreVertical className="size-4"/>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={()=>setIsEditing(true)}>
+                <Pencil className="size-3"/>
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>deletePost(post.id)}
+                className="text-red-500 focus:text-red-500"
+                >
+                <Trash className="size-3"/>
+                Delete
+                </DropdownMenuItem>  
+            </DropdownMenuContent>
+          </DropdownMenu>
       </div>
-
       {/* ================= BODY ================= */}
       <div>
         {isEditing ? (
