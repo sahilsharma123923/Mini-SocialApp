@@ -31,9 +31,6 @@ export const usePostStore = create<PostStore>((set) => ({
           withCredentials: true,
         }
       );
-
-      console.log("Posts from backend:", res.data.posts);
-
       set({
         posts: res.data.posts,
       });

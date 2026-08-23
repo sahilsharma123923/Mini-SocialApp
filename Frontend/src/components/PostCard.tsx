@@ -75,6 +75,7 @@ const PostCard = ({ post }: PostProps) => {
           {/* Options menu */}
           <DropdownMenu>
             <DropdownMenuTrigger
+              nativeButton={false}
             render={
            <div
              title="Post options"
