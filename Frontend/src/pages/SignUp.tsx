@@ -29,16 +29,16 @@ export default function SignupPage() {
             {/* Username */}
             <div className="space-y-2">
               <label
-                htmlFor="username"
+                htmlFor="Fullname"
                 className="text-sm font-medium font-mono"
               >
-                Username
+                Full Name
               </label>
 
               <input
-                id="username"
+                id="Fullname"
                 type="text"
-                placeholder="Enter your username"
+                placeholder="Enter your name"
                 className="w-full h-11 rounded-lg border font-mono border-[#303030] bg-[#181818] px-3 text-sm outline-none placeholder:text-gray-500 focus:border-white transition"
               />
             </div>
