@@ -6,6 +6,8 @@ import {
   Pencil,
   Trash,
 } from "lucide-react";
+import { buttonVariants } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -35,7 +37,7 @@ const PostCard = ({ post }: PostProps) => {
   const handleSave = () => {
     if (!editText.trim()) return;
 
-    editPost(post.id, editText);
+    editPost(post._id, editText);
     setIsEditing(false);
   };
 
@@ -72,21 +74,21 @@ const PostCard = ({ post }: PostProps) => {
 
           {/* Options menu */}
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button
-              variant="ghost"
-              size="icon"
-              title="Post options"
-              className="text-muted-foreground"> 
-                <MoreVertical className="size-4"/>
-              </Button>
-            </DropdownMenuTrigger>
+            <DropdownMenuTrigger
+            render={
+           <div
+             title="Post options"
+             className={cn(
+             buttonVariants({ variant: "ghost", size: "icon" }),"text-muted-foreground cursor-pointer")}>
+             <MoreVertical className="size-4" />
+           </div>
+          }/>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={()=>setIsEditing(true)}>
                 <Pencil className="size-3"/>
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={()=>deletePost(post.id)}
+              <DropdownMenuItem onClick={()=>deletePost(post._id)}
                 className="text-red-500 focus:text-red-500"
                 >
                 <Trash className="size-3"/>
@@ -145,7 +147,7 @@ const PostCard = ({ post }: PostProps) => {
           {/* LIKE */}
           <Button
             variant="ghost"
-            onClick={() => toggleLike(post.id)}
+            onClick={() => toggleLike(post._id)}
             className={`flex items-center gap-1.5 text-sm ${
               post.isLiked
                 ? "text-red-500"
@@ -183,7 +185,7 @@ const PostCard = ({ post }: PostProps) => {
       {showComments && (
         <div className="border-t pt-3">
 
-          <CommentSection postId={post.id} />
+          <CommentSection postId={post._id} />
 
           <Button
             variant="ghost"

@@ -1,25 +1,30 @@
 import { useState } from "react";
-import { usePostStore } from "@/store/PostStore";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 import { Pencil, Trash } from "lucide-react";
 
+import { usePostStore } from "@/store/PostStore";
+
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+
 interface CommentSectionProps {
-  postId: number;
+  postId: string;
 }
 
 const CommentSection = ({ postId }: CommentSectionProps) => {
   const [text, setText] = useState("");
 
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
 
+  // Get comments from Zustand
   const allComments = usePostStore((state) => state.comments);
 
+  // Get comments belonging to this post
   const comments = allComments.filter(
     (comment) => comment.postId === postId
   );
 
+  // Zustand actions
   const addComment = usePostStore((state) => state.addComment);
   const editComment = usePostStore((state) => state.editComment);
   const deleteComment = usePostStore((state) => state.deleteComment);
@@ -28,18 +33,23 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
     if (!text.trim()) return;
 
     const newComment = {
-      id: Date.now(),
-      postId: postId,
+      _id: Date.now().toString(),
+      postId,
       username: "Sahil",
-      content: text,
+      content: text.trim(),
       createdAt: "Just now",
     };
 
     addComment(newComment);
+
     setText("");
   };
 
-  const startEditing = (commentId: number, currentContent: string) => {
+
+  const startEditing = (
+    commentId: string,
+    currentContent: string
+  ) => {
     setEditingId(commentId);
     setEditText(currentContent);
   };
@@ -49,18 +59,21 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
     setEditText("");
   };
 
-  const saveEdit = (commentId: number) => {
+  const saveEdit = (commentId: string) => {
     if (!editText.trim()) return;
 
-    editComment(commentId, editText);
+    editComment(commentId, editText.trim());
+
     setEditingId(null);
     setEditText("");
   };
 
-  const handleDelete = (commentId: number) => {
+
+  const handleDelete = (commentId: string) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this comment?"
     );
+
     if (!confirmed) return;
 
     deleteComment(commentId);
@@ -68,48 +81,73 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
 
   return (
     <div className="mt-3 space-y-4">
+
       {/* Existing Comments */}
       <div>
         {comments.map((comment) => {
-          const isEditing = editingId === comment.id;
+          const isEditing = editingId === comment._id;
 
           return (
             <div
-              key={comment.id}
+              key={comment._id}
               className="group flex gap-3 border-b border-border/50 py-3 last:border-b-0"
             >
-
-              {/* Content column */}
+              {/* Content */}
               <div className="flex-1">
-                <p className="text-sm font-semibold">{comment.username}</p>
+
+                {/* Username */}
+                <p className="text-sm font-semibold">
+                  {comment.username}
+                </p>
 
                 {isEditing ? (
+                  /* =========================
+                     Edit Comment
+                     ========================= */
                   <div className="mt-1 space-y-2">
                     <Input
                       type="text"
                       value={editText}
-                      onChange={(e) => setEditText(e.target.value)}
+                      onChange={(e) =>
+                        setEditText(e.target.value)
+                      }
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") saveEdit(comment.id);
-                        if (e.key === "Escape") cancelEditing();
+                        if (e.key === "Enter") {
+                          saveEdit(comment._id);
+                        }
+
+                        if (e.key === "Escape") {
+                          cancelEditing();
+                        }
                       }}
                       className="text-sm"
                       autoFocus
                     />
+
                     <div className="flex gap-2">
                       <Button
                         size="sm"
                         variant="default"
-                        onClick={() => saveEdit(comment.id)}
+                        onClick={() =>
+                          saveEdit(comment._id)
+                        }
                       >
                         Save
                       </Button>
-                      <Button size="sm" variant="ghost" onClick={cancelEditing}>
+
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={cancelEditing}
+                      >
                         Cancel
                       </Button>
                     </div>
                   </div>
                 ) : (
+                  /* =========================
+                     Normal Comment
+                     ========================= */
                   <>
                     <p className="text-sm text-muted-foreground">
                       {comment.content}
@@ -118,22 +156,32 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
                     <div className="mt-1 flex items-center justify-between gap-2 text-xs text-muted-foreground">
                       <span>{comment.createdAt}</span>
 
-                      {/* TODO: only show once real auth exists and comment belongs to logged-in user */}
+                      {/* Edit / Delete */}
                       <span className="hidden items-center gap-3 group-hover:flex">
+
+                        {/* Edit */}
                         <button
                           onClick={() =>
-                            startEditing(comment.id, comment.content)
+                            startEditing(
+                              comment._id,
+                              comment.content
+                            )
                           }
-                          className="hover:underline hover:text-foreground"
+                          className="hover:text-foreground"
                         >
-                          <Pencil className="text-muted-foreground size-3"/>
+                          <Pencil className="size-3 text-muted-foreground" />
                         </button>
+
+                        {/* Delete */}
                         <button
-                          onClick={() => handleDelete(comment.id)}
-                          className="text-red-400 hover:underline hover:text-red-300"
+                          onClick={() =>
+                            handleDelete(comment._id)
+                          }
+                          className="text-red-400 hover:text-red-300"
                         >
-                          <Trash className="text-muted-foreground size-3"/>
+                          <Trash className="size-3 text-muted-foreground" />
                         </button>
+
                       </span>
                     </div>
                   </>
@@ -151,12 +199,18 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") handleComment();
+            if (e.key === "Enter") {
+              handleComment();
+            }
           }}
           placeholder="Write a comment..."
           className="flex-1 rounded-md border bg-background px-3 py-2 text-sm outline-none focus:ring-2"
         />
-        <Button variant="ghost" onClick={handleComment}>
+
+        <Button
+          variant="ghost"
+          onClick={handleComment}
+        >
           Post
         </Button>
       </div>
