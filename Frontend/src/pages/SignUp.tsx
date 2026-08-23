@@ -1,9 +1,28 @@
+import { useAuthStore } from "@/store/authStore";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const[fullName,setFullName]=useState("")
+  const[email,setEmail]=useState("")
+  const[password,setPassword]=useState("")
+
+  const{register,loading,error}=useAuthStore();
+  const navigate=useNavigate();
+
+  async function handleSignup(e:React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const success=await register(fullName,email,password)
+
+    if(success){
+      navigate("/")
+    }
+  }
+  
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4 py-8">
@@ -23,8 +42,15 @@ export default function SignupPage() {
             </p>
           </div>
 
+             {/* Error */}
+          {error && (
+            <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+
           {/* Form */}
-          <form className="space-y-4">
+          <form onSubmit={handleSignup} className="space-y-4">
 
             {/* Username */}
             <div className="space-y-2">
@@ -38,6 +64,9 @@ export default function SignupPage() {
               <input
                 id="Fullname"
                 type="text"
+                value={fullName}
+                onChange={(e)=>setFullName(e.target.value)}
+                disabled={loading}
                 placeholder="Enter your name"
                 className="w-full h-11 rounded-lg border font-mono border-[#303030] bg-[#181818] px-3 text-sm outline-none placeholder:text-gray-500 focus:border-white transition"
               />
@@ -55,6 +84,9 @@ export default function SignupPage() {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e)=>setEmail(e.target.value)}
+                disabled={loading}
                 placeholder="you@example.com"
                 className="w-full h-11 rounded-lg border font-mono border-[#303030] bg-[#181818] px-3 text-sm outline-none placeholder:text-gray-500 focus:border-white transition"
               />
@@ -72,6 +104,9 @@ export default function SignupPage() {
               <div className="relative">
                 <input
                   id="password"
+                  value={password}
+                  onChange={(e)=>setPassword(e.target.value)}
+                  disabled={loading}
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a password"
                   className="w-full h-11 rounded-lg font-mono border border-[#303030] bg-[#181818] px-3 pr-11 text-sm outline-none placeholder:text-gray-500 focus:border-white transition"
@@ -94,9 +129,10 @@ export default function SignupPage() {
             {/* Signup Button */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full h-11 font-mono rounded-lg bg-white text-black font-semibold text-sm hover:bg-gray-200 transition mt-2"
             >
-              Sign up
+              {loading ? "Creating account...":"Sign up"}
             </button>
           </form>
 

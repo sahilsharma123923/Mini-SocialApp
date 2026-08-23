@@ -1,9 +1,26 @@
+import { useAuthStore } from "@/store/authStore";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const[email,setEmail]=useState("");
+  const[password,setPassword]=useState("")
+
+  const{login,loading,error}=useAuthStore();
+  const navigate=useNavigate();
+
+  async function handleLogin(e:React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const success=await login(email,password)
+
+    if(success){
+      navigate("/")
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4 py-8">
@@ -23,8 +40,15 @@ export default function Login() {
             </p>
           </div>
 
+            {/* Error */}
+          {error && (
+            <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+              {error}
+            </div>
+          )}
+
           {/* Form */}
-          <form className="space-y-4">
+          <form  onSubmit={handleLogin} className="space-y-4">
 
             {/* Email */}
             <div className="space-y-2">
@@ -38,6 +62,9 @@ export default function Login() {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e)=>setEmail(e.target.value)}
+                disabled={loading}
                 placeholder="you@example.com"
                 className="w-full h-11 rounded-lg font-mono border border-[#303030] bg-[#181818] px-3 text-sm outline-none placeholder:text-gray-500 focus:border-white transition"
               />
@@ -66,6 +93,9 @@ export default function Login() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
+                  value={password}
+                  onChange={(e)=>setPassword(e.target.value)}
+                  disabled={loading}
                   className="w-full h-11 rounded-lg border border-[#303030] bg-[#181818] px-3 pr-11 text-sm outline-none placeholder:text-gray-500 focus:border-white transition"
                 />
 
@@ -88,7 +118,7 @@ export default function Login() {
               type="submit"
               className="w-full h-11 rounded-lg bg-white font-mono text-black font-semibold text-sm hover:bg-gray-200 transition mt-2"
             >
-              Log in
+              {loading ?"Logging in...":"Login"}
             </button>
           </form>
 

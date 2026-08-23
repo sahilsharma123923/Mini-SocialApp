@@ -25,8 +25,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   login: async (email, password) => {
     set({ loading: true, error: null });
     try {
-      const res = await axios.post(
-        "/api/auth/login",
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`,
         { email, password },
         { withCredentials: true } // needed so the "token" cookie your backend sets is stored
       );
@@ -45,7 +44,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ loading: true, error: null });
     try {
       const res = await axios.post(
-        "/api/auth/register",
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
         { fullName, email, password },
         { withCredentials: true }
       );
