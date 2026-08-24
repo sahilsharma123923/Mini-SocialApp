@@ -9,9 +9,9 @@ interface PostStore {
   comments: Comment[];
 
   getPosts: () => Promise<void>;
-  addPost: (newPost: Post) => void;
-  toggleLiked: (id: string) => void;
-  addComment: (comment: Comment) => void;
+  addPost: (content:string,image?:string) => Promise<void>;
+  toggleLiked: (id: string) => Promise<void>;
+  addComment: (comment: Comment) => Promise<void>;
   deletePost: (id: string) => void;
   editPost: (id: string, content: string) => void;
   editComment: (id: string, content: string) => void;
@@ -39,13 +39,24 @@ export const usePostStore = create<PostStore>((set) => ({
     }
   },
 
-  addPost: (newPost) => {
-    set((state) => ({
-      posts: [newPost, ...state.posts],
+  addPost: async(content,image) => {
+ 
+    try{
+     const res=await axios.post(`${import.meta.env.VITE_API_URL}/api/posts`,
+      {content,image},
+      {
+        withCredentials:true,
+      }
+     );
+      set((state) => ({
+      posts: [res.data.post, ...state.posts],
     }));
+    }catch(err){
+      console.error("Failed to create post:",err);
+    }
   },
 
-  toggleLiked: (id) => {
+  toggleLiked: async(id) => {
     set((state) => ({
       posts: state.posts.map((post) =>
         post._id === id
@@ -61,9 +72,33 @@ export const usePostStore = create<PostStore>((set) => ({
           : post
       ),
     }));
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/posts/${id}/like`,{},
+        {
+          withCredentials:true
+        }
+      );
+    } catch (error) {
+      console.error("Failed to like the post :",error);
+
+      // revert back if the request failed
+      set((state)=>({
+      posts:state.posts.map((post)=>
+      post._id===id ?{
+        ...post,
+        likes:post.isLiked?post.likes-1
+        :post.likes+1,
+        
+        isLiked:!post.isLiked ,
+      }:post
+    ),
+      }))
+    }
+
   },
 
-  addComment: (comment) => {
+  addComment: async(comment) => {
     set((state) => ({
       comments: [...state.comments, comment],
 
@@ -76,6 +111,13 @@ export const usePostStore = create<PostStore>((set) => ({
           : post
       ),
     }));
+
+    try {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/posts/${comment.postId}/comment`,{content:comment.content},{withCredentials:true});
+    } catch (error) {
+      console.error("Failed to comment in post:",error);
+    }
+
   },
 
 
