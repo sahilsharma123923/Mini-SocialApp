@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import CreatePostPage from './pages/CreatePostPage'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
+import LandingPage from './components/LandingPage'
 
 
 function App() {
@@ -11,7 +12,8 @@ function App() {
   return (
 
   <Routes>
-    <Route path='/' element={<Home/>}/>
+    <Route path='/' element={<LandingPage/>}/>
+    <Route path='/home' element={<Home/>}/>
     <Route path='/register' element={<SignUp/>}/>
     <Route path='/login' element={<Login/>}/>
     <Route path='/create' element={<CreatePostPage/>}/>
