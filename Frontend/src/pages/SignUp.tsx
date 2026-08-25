@@ -19,7 +19,7 @@ export default function SignupPage() {
     const success=await register(fullName,email,password)
 
     if(success){
-      navigate("/")
+      navigate("/home")
     }
   }
   
