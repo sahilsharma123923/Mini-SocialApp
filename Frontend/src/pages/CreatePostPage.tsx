@@ -17,21 +17,11 @@ const CreatePostPage = () => {
       if(!text.trim())
         return;
  
-       const newpost={
-        id:Date.now(),
-        username:"SahilSharma323",
-        avatar:"SS",
-        content:text,
-        likes:0,
-        comments:0,
-        createdAt:"Just now"
-       };
-
-       addPost(newpost);
+       addPost(text);
 
        setText("");
 
-       navigate("/");
+       navigate("/home");
     }
 
 
