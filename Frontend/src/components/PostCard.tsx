@@ -1,13 +1,8 @@
 import { useState } from "react";
-import {
-  Heart,
-  MessageCircle,
-  MoreVertical,
-  Pencil,
-  Trash,
-} from "lucide-react";
+import {Heart,MessageCircle,MoreVertical,Pencil,Trash,} from "lucide-react";
 import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
+import {formatDistanceToNow} from "date-fns";
 
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -67,7 +62,7 @@ const PostCard = ({ post }: PostProps) => {
             </span>
 
             <span className="text-xs text-muted-foreground">
-              {post.createdAt}
+              {formatDistanceToNow(new Date(post.createdAt),{addSuffix:true})}
             </span>
           </div>
         </div>
