@@ -48,6 +48,8 @@ async function commentCreate(req: Request, res: Response) {
       post: postId,
     });
 
+    await postModel.findByIdAndUpdate(postId,{$inc:{comments:1}});
+
     return res.status(201).json({
       message: "Comment created successfully",
       comment,

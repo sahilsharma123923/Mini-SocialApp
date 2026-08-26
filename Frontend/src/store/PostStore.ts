@@ -12,7 +12,7 @@ interface PostStore {
   addPost: (content:string,image?:string) => Promise<void>;
   toggleLiked: (id: string) => Promise<void>;
   addComment: (comment: Comment) => Promise<void>;
-  deletePost: (id: string) => void;
+  deletePost: (id: string) => Promise<void>;
   editPost: (id: string, content: string) => void;
   editComment: (id: string, content: string) => void;
   deleteComment: (id: string) => void;
@@ -42,7 +42,7 @@ export const usePostStore = create<PostStore>((set) => ({
   addPost: async(content,image) => {
  
     try{
-     const res=await axios.post(`${import.meta.env.VITE_API_URL}/api/posts`,
+     const res=await axios.post(`${import.meta.env.VITE_API_URL}/api/posts/create`,
       {content,image},
       {
         withCredentials:true,
@@ -55,18 +55,15 @@ export const usePostStore = create<PostStore>((set) => ({
       console.error("Failed to create post:",err);
     }
   },
-
-  toggleLiked: async(id) => {
+toggleLiked: async(id) => {
     set((state) => ({
       posts: state.posts.map((post) =>
         post._id === id
           ? {
               ...post,
-
               likes: post.isLiked
-                ? post.likes - 1
-                : post.likes + 1,
-
+                ? post.likes.slice(0, -1)
+                : [...post.likes, "temp"],
               isLiked: !post.isLiked,
             }
           : post
@@ -82,22 +79,19 @@ export const usePostStore = create<PostStore>((set) => ({
     } catch (error) {
       console.error("Failed to like the post :",error);
 
-      // revert back if the request failed
       set((state)=>({
       posts:state.posts.map((post)=>
       post._id===id ?{
         ...post,
-        likes:post.isLiked?post.likes-1
-        :post.likes+1,
-        
+        likes: post.isLiked
+          ? post.likes.slice(0, -1)
+          : [...post.likes, "temp"],
         isLiked:!post.isLiked ,
       }:post
     ),
       }))
     }
-
-  },
-
+},
   addComment: async(comment) => {
     set((state) => ({
       comments: [...state.comments, comment],
@@ -121,10 +115,15 @@ export const usePostStore = create<PostStore>((set) => ({
   },
 
 
-  deletePost: (id) => {
-    set((state) => ({
-      posts: state.posts.filter((post) => post._id !== id),
-    }));
+  deletePost: async(id) => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/api/posts/${id}`,{withCredentials:true});
+      set((state) => ({
+        posts: state.posts.filter((post) => post._id !== id),
+      }));
+    } catch (error) {
+      console.log("Failed to delete post:",error)
+    }
   },
 
   editPost: (id, content) => {

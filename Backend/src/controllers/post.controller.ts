@@ -26,6 +26,8 @@ async function createPost(req: Request, res: Response) {
       author: userId,
     });
 
+    await post.populate("author","fullName email");
+
     return res.status(201).json({
       message: "Post created successfully",
       post,
@@ -121,7 +123,7 @@ async function editPost(req:Request,res:Response) {
       content,image
     },
     {
-      new:true
+     returnDocument:'after'
     }
    )
 

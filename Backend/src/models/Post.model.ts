@@ -6,6 +6,7 @@ import mongoose from "mongoose";
     image?:string;
     author:mongoose.Types.ObjectId;
     likes:mongoose.Types.ObjectId[];
+    comments:number;
     createdAt:Date;
     updatedAt:Date;
 }
@@ -29,6 +30,10 @@ const postSchema=new mongoose.Schema<IPost>({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     }],
+    comments:{
+      type:Number,
+      default:0
+    }
 },
 {
     timestamps:true

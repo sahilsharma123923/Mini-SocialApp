@@ -57,13 +57,13 @@ const PostCard = ({ post }: PostProps) => {
         <div className="flex items-center gap-3">
           <Avatar>
             <AvatarFallback>
-              {post.avatar}
+              {post.author.fullName?.charAt(0)}
             </AvatarFallback>
           </Avatar>
 
           <div className="flex flex-col">
             <span className="text-sm font-semibold">
-              {post.username}
+              {post.author.fullName}
             </span>
 
             <span className="text-xs text-muted-foreground">
@@ -164,7 +164,7 @@ const PostCard = ({ post }: PostProps) => {
               }
             />
 
-            <span>{post.likes}</span>
+            <span>{post.likes.length}</span>
           </Button>
 
           {/* COMMENT */}
