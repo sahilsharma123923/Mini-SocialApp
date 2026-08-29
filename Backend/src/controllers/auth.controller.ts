@@ -103,4 +103,74 @@ async function userLogin(req:Request,res:Response){
    }
 
 }
-export default {userRegister,userLogin}
+async function googleAuth(req:Request,res:Response) {
+    try {
+        const {access_token}=req.body;
+
+        if(!access_token){
+            return res.status(400).json({
+                message:"Access token is required",
+                status:"Failed"
+            })
+        }
+
+        const googleRes = await fetch(
+            `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
+        );
+
+        if(!googleRes.ok){
+            return res.status(401).json({
+                message:"Invalid Google token",
+                status:"Failed"
+            })
+        }
+
+        const googleData=await googleRes.json();
+        const{email,fullName}=googleData;
+
+        if(!email){
+            return res.status(400).json({
+                message:"Could not retrieve email from Google",
+                status:"Failed"
+            })
+        }
+
+        let user=await userModel.findOne({
+            email
+        });
+
+        if(!user){
+            user=await userModel.create({
+                email,
+                fullName,
+                authProvider:"google"
+            })
+        }
+        if(!process.env.JWT_SECRET){
+            throw new Error("JWT_SECRET is not defined in environment variables")
+        }
+         const token=jwt.sign({userId:user?._id},process.env.JWT_SECRET,{expiresIn:"3d"})
+   
+        res.cookie("token",token,{
+                httpOnly:true,
+                maxAge:3*24*60*60*1000,
+            })
+
+            res.status(200).json({
+                message:"Google Login successfully",
+                status:"Success",
+                user:{
+                    id:user._id,
+                    email:user.email,
+                    fullName:user.fullName
+                }
+            })
+    } catch (error) {
+        console.log("Google auth Failed :",error)
+        return res.status(500).json({
+            message:"Something went wrong",
+            status:"Failed"
+        })
+    }
+}
+export default {userRegister,userLogin,googleAuth}

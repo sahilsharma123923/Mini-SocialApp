@@ -1,3 +1,4 @@
+import { useGoogleLogin } from "@react-oauth/google";
 import { useAuthStore } from "@/store/authStore";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
@@ -12,6 +13,11 @@ export default function SignupPage() {
 
   const{register,loading,error}=useAuthStore();
   const navigate=useNavigate();
+  const googleLogin=useGoogleLogin({
+    onSuccess:(Response)=>{
+      console.log(Response)
+    }
+  })
 
   async function handleSignup(e:React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -150,6 +156,7 @@ export default function SignupPage() {
           {/* Google Button */}
           <button
             type="button"
+            onClick={()=>googleLogin()}
             className="w-full h-11 rounded-lg border font-mono border-[#303030] bg-[#181818] text-sm font-medium hover:bg-[#202020] transition"
           >
             Continue with Google

@@ -5,7 +5,8 @@ import bcrypt from "bcryptjs";
  export interface IUser{
   fullName:string,
   email:string,
-  password:string
+  password?:string,
+  authProvider:"local" | "google"
 }
 
  export interface IUserMethods{
@@ -27,10 +28,17 @@ const userSchema = new mongoose.Schema<IUser,mongoose.Model<IUser,{},IUserMethod
       required: [true, "email is required to create an account"],
       trim: true,
     },
-    password: {
+      password: {
       type: String,
-      required: true,
+      required: function(this: IUser) {
+        return this.authProvider === "local";
+      },
       minLength: [6, "password must be at least 6 characters"],
+    },
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
     },
   },
   {
@@ -39,7 +47,7 @@ const userSchema = new mongoose.Schema<IUser,mongoose.Model<IUser,{},IUserMethod
 );
 
 userSchema.pre("save",async function() {
-  if(!this.isModified("password")){
+  if(!this.isModified("password") || !this.password){
     return;
   }
   const hash=await bcrypt.hash(this.password,10)
@@ -49,8 +57,11 @@ userSchema.pre("save",async function() {
 });
 
 userSchema.method("comparePassword",async function(password:string):Promise<boolean> {
+  if(!this.password){
+    return false;
+  }
   return await bcrypt.compare(password,this.password)
-});
+});;
 
 const userModel = mongoose.model<IUser,mongoose.Model<IUser,{},IUserMethods>>("User", userSchema);
 
