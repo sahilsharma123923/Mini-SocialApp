@@ -11,11 +11,15 @@ export default function SignupPage() {
   const[email,setEmail]=useState("")
   const[password,setPassword]=useState("")
 
-  const{register,loading,error}=useAuthStore();
+  const{register,googleLogin,loading,error}=useAuthStore();
   const navigate=useNavigate();
-  const googleLogin=useGoogleLogin({
-    onSuccess:(Response)=>{
-      console.log(Response)
+  const handleGoogleLogin=useGoogleLogin({
+    onSuccess:async(response)=>{
+      const success=await googleLogin(response.access_token)
+
+      if(success){
+        navigate("/home")
+      }
     }
   })
 
@@ -156,7 +160,7 @@ export default function SignupPage() {
           {/* Google Button */}
           <button
             type="button"
-            onClick={()=>googleLogin()}
+            onClick={()=>handleGoogleLogin()}
             className="w-full h-11 rounded-lg border font-mono border-[#303030] bg-[#181818] text-sm font-medium hover:bg-[#202020] transition"
           >
             Continue with Google

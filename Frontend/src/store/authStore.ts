@@ -14,6 +14,7 @@ interface AuthStore {
   error: string | null;
   login: (email: string, password: string) => Promise<boolean>;
   register: (fullName: string, email: string, password: string) => Promise<boolean>;
+  googleLogin:(access_token:string)=>Promise<boolean>;
   logout: () => void;
 }
 
@@ -23,6 +24,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
   error: null,
 
   login: async (email, password) => {
+
     set({ loading: true, error: null });
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`,
@@ -59,5 +61,20 @@ export const useAuthStore = create<AuthStore>((set) => ({
     }
   },
 
+  googleLogin:async(access_token)=>{
+    set({loading:true,error:null});
+    try{
+      const res=await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/google`,{access_token},{withCredentials:true});
+      set({user:res.data.user,loading:false});
+      return true;
+    }
+    catch(err:any){
+       set({
+        error:err.response?.data?.message || "Google login failed",
+        loading:false
+       });
+       return false;
+    }
+  },
   logout: () => set({ user: null }),
 }));
