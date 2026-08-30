@@ -7,9 +7,11 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import{ usePostStore }from "../store/PostStore"
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react"
 
 const CreatePostPage = () => {
     const[text,setText]=useState("")
+    const [showEmojiPicker,setShowEmojiPicker]=useState(false)
     const addPost=usePostStore((state)=>state.addPost);
     const navigate=useNavigate();
 
@@ -24,6 +26,10 @@ const CreatePostPage = () => {
        navigate("/home");
     }
 
+    const handleEmojiClick = (emojiData: EmojiClickData) => {
+     setText((prev) => prev + emojiData.emoji);
+     setShowEmojiPicker(false);
+}
 
   return (
   <div className="min-h-screen bg-background py-10 px-4">
@@ -60,10 +66,21 @@ const CreatePostPage = () => {
                <Image className="size-4 mr-2"/>
                Photo
             </Button>
-            <Button variant="outline" size="sm">
+            <Button
+             type="button"
+             variant="outline"
+              size="sm"
+              onClick={()=>setShowEmojiPicker((prev)=>!prev)}
+              >
                 <Smile className="size-4 mr-2"/>
              Emoji
             </Button>
+            
+            {showEmojiPicker && (
+              <div className="absolute top-12 left-0 z-50">
+                <EmojiPicker onEmojiClick={handleEmojiClick}/>
+              </div>
+            )}
           </div>
        </CardContent>
 
