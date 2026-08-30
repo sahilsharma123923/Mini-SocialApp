@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Pencil, Trash } from "lucide-react";
-
 import { usePostStore } from "@/store/PostStore";
-
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 

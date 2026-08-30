@@ -4,6 +4,7 @@ import { buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { formatTwitterTime } from "@/lib/formatTime";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Dialog,DialogContent } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 
@@ -170,27 +171,40 @@ const PostCard = ({ post }: PostProps) => {
             className="flex items-center gap-1.5 text-sm text-muted-foreground"
           >
             <MessageCircle className="size-4" />
-
             <span>{post.comments}</span>
           </Button>
         </div>
       </div>
 
-      {/* ================= COMMENTS ================= */}
-      {showComments && (
-        <div className="border-t pt-3">
+           {/* ================= COMMENTS ================= */}
+           
+      <Dialog open={showComments} onOpenChange={setShowComments}>
+        <DialogContent className="max-w-lg">
+
+          {/* Original post, for context */}
+          <div className="flex items-center gap-3 border-b pb-3">
+            <Avatar>
+              <AvatarFallback>
+                {post.author.fullName?.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold">
+                {post.author.fullName}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {formatTwitterTime(post.createdAt)}
+              </span>
+            </div>
+          </div>
+
+          <p className="text-sm">{post.content}</p>
 
           <CommentSection postId={post._id} />
 
-          <Button
-            variant="ghost"
-            onClick={() => setShowComments(false)}
-            className="mt-2"
-          >
-            Close
-          </Button>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { useGoogleLogin } from "@react-oauth/google";
 import { useAuthStore } from "@/store/authStore";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
@@ -9,7 +10,7 @@ export default function Login() {
   const[email,setEmail]=useState("");
   const[password,setPassword]=useState("")
 
-  const{login,loading,error}=useAuthStore();
+  const{login,googleLogin,loading,error}=useAuthStore();
   const navigate=useNavigate();
 
   async function handleLogin(e:React.FormEvent<HTMLFormElement>) {
@@ -21,6 +22,17 @@ export default function Login() {
       navigate("/home")
     }
   }
+
+const handleGoogleLogin=useGoogleLogin({
+    onSuccess:async(response)=>{
+      const success=await googleLogin(response.access_token)
+
+      if(success){
+        navigate("/home")
+      }
+    }
+  })
+
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4 py-8">
@@ -116,6 +128,7 @@ export default function Login() {
             {/* Login Button */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full h-11 rounded-lg bg-white font-mono text-black font-semibold text-sm hover:bg-gray-200 transition mt-2"
             >
               {loading ?"Logging in...":"Login"}
@@ -136,6 +149,7 @@ export default function Login() {
           {/* Google Button */}
           <button
             type="button"
+            onClick={() => handleGoogleLogin()}
             className="w-full h-11 rounded-lg font-mono border border-[#303030] bg-[#181818] text-sm font-medium hover:bg-[#202020] transition"
           >
             Continue with Google
