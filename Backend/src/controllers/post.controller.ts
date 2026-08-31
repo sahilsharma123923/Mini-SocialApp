@@ -50,7 +50,7 @@ async function uploadImage(req:Request,res:Response) {
   
     if(!userId){
       return res.status(401).json({
-  
+       message:"Unauthorized access"
       })
     }
     if(!req.file){

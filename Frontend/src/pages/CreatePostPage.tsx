@@ -1,17 +1,22 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { ArrowLeft, Image, Smile, User } from "lucide-react"
+import { Image, Smile, User } from "lucide-react"
 import { Card,CardHeader,CardContent,CardTitle, CardFooter } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import{ usePostStore }from "../store/PostStore"
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react"
+import axios from "axios"
 
 const CreatePostPage = () => {
+  
     const[text,setText]=useState("")
     const [showEmojiPicker,setShowEmojiPicker]=useState(false)
+    const [imageUrl, setImageUrl] = useState<string | null>(null)
+    const [uploading, setUploading] = useState(false)
+    const fileInputRef = useRef<HTMLInputElement>(null)
     const addPost=usePostStore((state)=>state.addPost);
     const navigate=useNavigate();
 
@@ -19,9 +24,10 @@ const CreatePostPage = () => {
       if(!text.trim())
         return;
  
-       addPost(text);
+       addPost(text, imageUrl ?? undefined);
 
        setText("");
+       setImageUrl(null);
 
        navigate("/home");
     }
@@ -31,14 +37,33 @@ const CreatePostPage = () => {
      setShowEmojiPicker(false);
 }
 
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      setUploading(true);
+
+      try {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/posts/upload-image`,
+          formData,
+          { withCredentials: true }
+        );
+
+        setImageUrl(res.data.url);
+      } catch (error) {
+        console.error("Image upload failed:", error);
+      } finally {
+        setUploading(false);
+      }
+    }
+
   return (
   <div className="min-h-screen bg-background py-10 px-4">
-    <div >
-        <Button variant="outline" size="icon" onClick={()=>navigate(-1)} className="w-16 gap-1 font-mono">
-            <ArrowLeft className="size-3"/>
-            Back
-        </Button>
-    </div>
+  
      <Card className="max-w-2xl mx-auto shadow-lg rounded-2xl">
       <CardHeader className=" flex items-center justify-center">
         <CardTitle className="text-2xl font-mono font-semibold">Create Post</CardTitle>
@@ -60,10 +85,47 @@ const CreatePostPage = () => {
           placeholder="What's on your mind ?"
           />
           </div>
+
+          {uploading && (
+            <p className="text-sm text-muted-foreground font-mono ml-16">Uploading image...</p>
+          )}
+
+          {imageUrl && (
+            <div className="ml-16 relative w-fit">
+              <img
+                src={imageUrl}
+                alt="Preview"
+                className="max-h-64 rounded-lg border"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="absolute top-2 right-2 h-6 w-6"
+                onClick={() => setImageUrl(null)}
+              >
+                ×
+              </Button>
+            </div>
+          )}
           
-          <div className=" mx-16 flex gap-4 justify-start">
-            <Button variant="outline" size="sm">
-               <Image className="size-4 mr-2"/>
+          <div className=" mx-16 flex gap-4 justify-start relative">
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              className="hidden"
+            />
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+            >
+               <Image className="size-4"/>
                Photo
             </Button>
             <Button
@@ -72,12 +134,12 @@ const CreatePostPage = () => {
               size="sm"
               onClick={()=>setShowEmojiPicker((prev)=>!prev)}
               >
-                <Smile className="size-4 mr-2"/>
+                <Smile className="size-4"/>
              Emoji
             </Button>
             
             {showEmojiPicker && (
-              <div className="absolute top-12 left-0 z-50">
+              <div className="absolute bottom-12 left-0 z-50">
                 <EmojiPicker onEmojiClick={handleEmojiClick}/>
               </div>
             )}
@@ -87,7 +149,10 @@ const CreatePostPage = () => {
        <Separator/>
 
        <CardFooter className="flex justify-between">
-        <Button variant="ghost">
+        <Button 
+        variant="outline"
+        onClick={()=>navigate("/home")}
+        >
           Cancel
         </Button>
         <Button

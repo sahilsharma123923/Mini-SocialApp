@@ -80,6 +80,7 @@ toggleLiked: async(id) => {
       console.error("Failed to like the post :",error);
 
       set((state)=>({
+        
       posts:state.posts.map((post)=>
       post._id===id ?{
         ...post,
