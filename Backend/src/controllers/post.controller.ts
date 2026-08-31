@@ -1,5 +1,6 @@
 import postModel from "../models/Post.model";
 import { Request, Response } from "express";
+import imagekit from "../config/imagekit";
 
 
 async function createPost(req: Request, res: Response) {
@@ -39,6 +40,43 @@ async function createPost(req: Request, res: Response) {
       message: "Internal server error",
     });
   }
+}
+async function uploadImage(req:Request,res:Response) {
+
+
+  try{
+    const userId=req.user?._id
+    
+  
+    if(!userId){
+      return res.status(401).json({
+  
+      })
+    }
+    if(!req.file){
+      return res.status(400).json({
+        message:"No image file is provided"
+      })
+    }
+    const result=await imagekit.upload({
+      file: req.file.buffer.toString("base64"),
+      fileName:`${userId}_${Date.now()}.jpg`,
+      folder:"/posts"
+    })
+
+    return res.status(200).json({
+      message:"Image uploaded successfully",
+      url:result.url
+    });
+
+  }catch(err){
+    console.log("Upload image err:",err)
+
+    return res.status(500).json({
+      message:"Internal server error"
+    })
+  }
+
 }
 async function getAllPosts(req: Request, res: Response) {
   try {
@@ -245,6 +283,7 @@ async function likePost(req:Request,res:Response) {
 
 export default {
   createPost,
+  uploadImage,
   getAllPosts,
   getSinglePost,
   editPost,
