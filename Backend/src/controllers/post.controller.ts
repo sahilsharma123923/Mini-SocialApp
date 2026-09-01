@@ -246,7 +246,7 @@ async function likePost(req:Request,res:Response) {
         }
       },
       {
-        new:true
+       returnDocument:'after'
       }
     );
     return res.status(200).json({
