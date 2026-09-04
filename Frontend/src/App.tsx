@@ -5,6 +5,7 @@ import CreatePostPage from './pages/CreatePostPage'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
 import LandingPage from './components/LandingPage'
+import ProfilePage from './pages/ProfilePage'
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
     <Route path='/register' element={<SignUp/>}/>
     <Route path='/login' element={<Login/>}/>
     <Route path='/create' element={<CreatePostPage/>}/>
+    <Route path='/profile' element={<ProfilePage/>}/>
   </Routes>
   
   )
