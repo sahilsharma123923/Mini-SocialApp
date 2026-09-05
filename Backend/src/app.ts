@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth",router);
+app.use("/api/users",router);
 app.use("/api/posts",routers);
 app.use("/api/posts",commentRouter)
 

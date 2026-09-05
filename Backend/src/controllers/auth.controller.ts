@@ -1,4 +1,4 @@
-import userModel from "../models/user.model";
+import User from "../models/user.model";
 import jwt from 'jsonwebtoken'
 import { Request,Response } from "express";
 import bcrypt from "bcryptjs";
@@ -8,7 +8,7 @@ async function userRegister(req:Request,res:Response) {
     try {
             const{email,fullName,password}=req.body
         
-            const isEmailExit=await userModel.findOne({
+            const isEmailExit=await User.findOne({
                 email:email
             })
         
@@ -19,7 +19,7 @@ async function userRegister(req:Request,res:Response) {
                 })
             }
 
-            const user=await userModel.create({
+            const user=await User.create({
                 email,
                 fullName,
                 password
@@ -58,7 +58,7 @@ async function userLogin(req:Request,res:Response){
    try{
        const {email,password}=req.body
    
-       const user=await userModel.findOne({
+       const user=await User.findOne({
            email
        })
    
@@ -135,12 +135,12 @@ async function googleAuth(req:Request,res:Response) {
             })
         }
 
-        let user=await userModel.findOne({
+        let user=await User.findOne({
             email
         });
 
         if(!user){
-            user=await userModel.create({
+            user=await User.create({
                 email,
                 fullName,
                 authProvider:"google"
@@ -173,4 +173,31 @@ async function googleAuth(req:Request,res:Response) {
         })
     }
 }
-export default {userRegister,userLogin,googleAuth}
+
+export const getUserProfile = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      username: user.username,
+      email: user.email,
+      bio: user.bio,
+      avatar: user.avatar,
+      followersCount: user.followers.length,
+      followingCount: user.following.length,
+      createdAt: user.createdAt,
+    });
+  } catch (error) {
+    console.error("Error in getUserProfile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export default {userRegister,userLogin,googleAuth,getUserProfile}
